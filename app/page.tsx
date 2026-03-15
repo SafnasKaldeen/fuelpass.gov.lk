@@ -4,8 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import { AdsterraAd } from "@/components/adsterra-ad";
 
 const REDIRECT_URL = "https://fuelpass.gov.lk/";
-const AD_CONTAINER_ID = "container-5989d5793e1618d757df7f53effce21a";
-const AD_SCRIPT_SRC = "https://pl28844175.effectivegatecpm.com/5989d5793e1618d757df7f53effce21a/invoke.js";
+const AD_CONTAINER_ID = "container-f809eade241e4e2118d5088c2760eb9e";
+const AD_SCRIPT_SRC = "https://pl28920844.effectivegatecpm.com/f809eade241e4e2118d5088c2760eb9e/invoke.js";
 
 // After ad DOM renders → redirect after this delay
 const AD_LOADED_REDIRECT_MS = 1000;
