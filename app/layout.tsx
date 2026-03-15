@@ -49,6 +49,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://pl28920844.effectivegatecpm.com" />
+        <link rel="dns-prefetch" href="https://pl28920844.effectivegatecpm.com" />
         {/* Force browser to pick up favicon.png, overrides any v0 default */}
         <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="shortcut icon" href="/favicon.png" type="image/png" />
