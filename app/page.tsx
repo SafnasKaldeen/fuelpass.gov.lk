@@ -5,12 +5,11 @@ import { AdsterraAd } from "@/components/adsterra-ad";
 
 const REDIRECT_URL = "https://fuelpass.gov.lk/";
 const AD_CONTAINER_ID = "container-f809eade241e4e2118d5088c2760eb9e";
-const AD_SCRIPT_SRC = "https://pl28920844.effectivegatecpm.com/f809eade241e4e2118d5088c2760eb9e/invoke.js";
+const AD_SCRIPT_SRC =
+  "https://pl28920844.effectivegatecpm.com/f809eade241e4e2118d5088c2760eb9e/invoke.js";
 
-// After ad DOM renders → redirect after this delay
 const AD_LOADED_REDIRECT_MS = 1000;
-// Hard fallback: redirect unconditionally after this many seconds
-const FALLBACK_SECONDS = 3;
+const FALLBACK_SECONDS = 10;
 
 export default function Page() {
   const [adLoaded, setAdLoaded] = useState(false);
@@ -24,21 +23,18 @@ export default function Page() {
   };
 
   useEffect(() => {
-    // ── Fallback hard-redirect countdown ──────────────────────────────────
     const fallbackTimer = setTimeout(doRedirect, FALLBACK_SECONDS * 1000);
 
-    // Visual countdown (ticks every second)
     const countdownInterval = setInterval(() => {
       setCountdown((c) => Math.max(0, c - 1));
     }, 1000);
 
-    // ── Poll the ad container for rendered children ────────────────────────
+    // Poll the container — works now because the div is always in the DOM at full size
     const pollInterval = setInterval(() => {
       const el = document.getElementById(AD_CONTAINER_ID);
       if (el && el.children.length > 0) {
         clearInterval(pollInterval);
         setAdLoaded(true);
-        // Ad appeared — redirect faster than the fallback
         clearTimeout(fallbackTimer);
         setTimeout(doRedirect, AD_LOADED_REDIRECT_MS);
       }
@@ -68,14 +64,12 @@ export default function Page() {
       {/* Glow */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[640px] rounded-full pointer-events-none"
-        style={{
-          background: "radial-gradient(circle,#16C47F22 0%,transparent 70%)",
-        }}
+        style={{ background: "radial-gradient(circle,#16C47F22 0%,transparent 70%)" }}
       />
 
       <div className="relative z-10 w-full max-w-2xl flex flex-col items-center gap-8">
 
-        {/* ── Header ───────────────────────────────────────────────────────── */}
+        {/* Header */}
         <div className="flex flex-col items-center gap-2 text-center">
           <div className="flex items-center gap-2.5 mb-1">
             <div className="w-9 h-9 rounded-xl bg-[#16C47F1A] border border-[#16C47F40] flex items-center justify-center">
@@ -101,7 +95,7 @@ export default function Page() {
           </p>
         </div>
 
-        {/* ── Ad card ──────────────────────────────────────────────────────── */}
+        {/* Ad card */}
         <div className="w-full rounded-2xl border border-white/10 bg-white/[0.04] overflow-hidden">
 
           {/* Card header */}
@@ -123,15 +117,24 @@ export default function Page() {
             </span>
           </div>
 
-          {/* Loading skeleton — visible until ad DOM renders */}
-          {!adLoaded && (
-            <div className="px-6 pt-6 pb-2">
+          {/* 
+            FIX: The ad div must always be in the DOM at its real size so the
+            Adsterra script can write into it and the poll can find children.
+            We show a skeleton on top while waiting, then fade it out — we never
+            use h-0/overflow-hidden which would starve the ad of layout space.
+          */}
+          <div className="relative">
+
+            {/* Skeleton — overlays the ad slot, fades out once ad loads */}
+            <div
+              className={`absolute inset-0 px-6 pt-6 pb-2 transition-opacity duration-500 pointer-events-none z-10 ${
+                adLoaded ? "opacity-0" : "opacity-100"
+              }`}
+            >
               <div className="w-full h-[260px] rounded-xl bg-white/5 animate-pulse" />
             </div>
-          )}
 
-          {/* Ad slot — always mounted so the script can write into the div */}
-          <div className={adLoaded ? "block" : "h-0 overflow-hidden"}>
+            {/* Ad slot — always mounted & always visible in the DOM */}
             <AdsterraAd
               scriptSrc={AD_SCRIPT_SRC}
               containerId={AD_CONTAINER_ID}
@@ -145,10 +148,9 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ── Countdown + skip ─────────────────────────────────────────────── */}
+        {/* Countdown + skip */}
         <div className="flex flex-col items-center gap-3">
           <div className="flex items-center gap-2.5">
-            {/* Circular countdown ring */}
             <div className="relative w-9 h-9 shrink-0">
               <svg className="absolute inset-0 -rotate-90" viewBox="0 0 36 36">
                 <circle cx="18" cy="18" r="14" fill="none" stroke="#ffffff0f" strokeWidth="3" />
