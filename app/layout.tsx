@@ -12,11 +12,10 @@ export const metadata: Metadata = {
   generator: 'v0.app',
   icons: {
     icon: [
-      { url: '/favicon.png', media: '(prefers-color-scheme: light)' },
-      { url: '/favicon.png', media: '(prefers-color-scheme: dark)' },
-      { url: '/favicon.png', type: 'image/svg+xml' },
+      { url: '/favicon.png' },
     ],
     apple: '/favicon.png',
+    shortcut: '/favicon.png',
   },
   openGraph: {
     title: 'Sri Lanka Fuel Pass - Official Application',
@@ -49,6 +48,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Force browser to pick up favicon.png, overrides any v0 default */}
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="shortcut icon" href="/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+      </head>
       <body className="font-sans antialiased">
         {children}
         <Analytics />
