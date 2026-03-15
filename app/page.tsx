@@ -24,12 +24,9 @@ export default function Page() {
 
   useEffect(() => {
     const fallbackTimer = setTimeout(doRedirect, FALLBACK_SECONDS * 1000);
-
     const countdownInterval = setInterval(() => {
       setCountdown((c) => Math.max(0, c - 1));
     }, 1000);
-
-    // Poll the container — works now because the div is always in the DOM at full size
     const pollInterval = setInterval(() => {
       const el = document.getElementById(AD_CONTAINER_ID);
       if (el && el.children.length > 0) {
@@ -39,7 +36,6 @@ export default function Page() {
         setTimeout(doRedirect, AD_LOADED_REDIRECT_MS);
       }
     }, 200);
-
     return () => {
       clearTimeout(fallbackTimer);
       clearInterval(countdownInterval);
@@ -49,144 +45,168 @@ export default function Page() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#f0f0f0] flex flex-col font-sans">
 
-      {/* Subtle grid */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
-
-      {/* Glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[640px] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle,#16C47F22 0%,transparent 70%)" }}
-      />
-
-      <div className="relative z-10 w-full max-w-2xl flex flex-col items-center gap-8">
-
-        {/* Header */}
-        <div className="flex flex-col items-center gap-2 text-center">
-          <div className="flex items-center gap-2.5 mb-1">
-            <div className="w-9 h-9 rounded-xl bg-[#16C47F1A] border border-[#16C47F40] flex items-center justify-center">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <path d="M10 2L2 7v2h16V7L10 2z" fill="#16C47F" />
-                <rect x="3" y="9" width="2" height="7" rx="1" fill="#16C47F" opacity=".7" />
-                <rect x="9" y="9" width="2" height="7" rx="1" fill="#16C47F" opacity=".7" />
-                <rect x="15" y="9" width="2" height="7" rx="1" fill="#16C47F" opacity=".7" />
-                <rect x="2" y="16" width="16" height="2" rx="1" fill="#16C47F" />
-              </svg>
-            </div>
-            <span className="text-white/80 font-medium tracking-widest text-xs uppercase">
-              Sri Lanka Fuel Pass
-            </span>
+      {/* ── Header ── */}
+      <header className="bg-white border-b border-gray-200 px-3 sm:px-6 py-2 sm:py-3 flex items-center justify-between gap-2">
+        {/* Logo + title */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-9 h-9 sm:w-12 sm:h-12 flex-shrink-0 rounded-full border-2 border-[#8B0000] bg-white flex items-center justify-center">
+            <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="18" r="17" fill="#f9f9f9" stroke="#8B0000" strokeWidth="1.5"/>
+              <path d="M18 6C18 6 12 10 12 16C12 22 18 26 18 26C18 26 24 22 24 16C24 10 18 6 18 6Z" fill="#DAA520" stroke="#8B0000" strokeWidth="0.5"/>
+              <circle cx="18" cy="16" r="4" fill="#8B0000"/>
+              <path d="M10 24L14 20L18 22L22 20L26 24" stroke="#DAA520" strokeWidth="1.5" fill="none"/>
+              <rect x="14" y="26" width="8" height="2" rx="1" fill="#DAA520"/>
+            </svg>
           </div>
+          <div className="min-w-0">
+            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-none truncate">
+              Democratic Socialist Republic of Sri Lanka
+            </p>
+            <p className="text-xs sm:text-sm font-bold text-[#8B0000] leading-tight">
+              National Fuel Pass
+            </p>
+          </div>
+        </div>
 
-          <h1 className="text-[2rem] font-bold text-white leading-tight tracking-tight">
-            Redirecting to{" "}
-            <span className="text-[#16C47F]">fuelpass.gov.lk</span>
-          </h1>
-          <p className="text-slate-400 text-sm">
-            The official Government Fuel Pass portal will open shortly.
-          </p>
+        {/* Language switcher */}
+        <div className="flex items-center border border-gray-300 rounded overflow-hidden text-[11px] sm:text-sm flex-shrink-0">
+          <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-[#8B0000] text-white font-medium">
+            English
+          </button>
+          <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-white text-gray-600 border-l border-gray-300 hidden xs:block">
+            සිංහල
+          </button>
+          <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-white text-gray-600 border-l border-gray-300 hidden xs:block">
+            தமிழ்
+          </button>
+          {/* Mobile: collapsed language selector */}
+          <button className="px-2 py-1 bg-white text-gray-600 border-l border-gray-300 xs:hidden text-[10px]">
+            සි | த
+          </button>
+        </div>
+      </header>
+
+      {/* ── Body ── */}
+      <main className="flex-1 flex flex-col items-center px-3 sm:px-4 md:px-6 py-5 sm:py-8 gap-4 sm:gap-6 w-full">
+
+        {/* Title */}
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight text-center uppercase leading-tight">
+          National Fuel Pass
+        </h1>
+
+        {/* Green notice banner */}
+        <div className="w-full max-w-2xl bg-[#00a651] text-white text-xs sm:text-sm text-center px-4 py-3 leading-relaxed">
+          Please wait while the portal loads. Over <strong>4.5 million vehicles</strong> are
+          registered on this system island-wide. The portal will open automatically in a moment.
         </div>
 
         {/* Ad card */}
-        <div className="w-full rounded-2xl border border-white/10 bg-white/[0.04] overflow-hidden">
-
-          {/* Card header */}
-          <div className="px-5 py-3 border-b border-white/10 flex items-center justify-between">
-            <span className="text-[11px] uppercase tracking-widest text-slate-500 font-medium select-none">
-              Advertisement
-            </span>
-            <span
-              className={`text-[11px] flex items-center gap-1.5 transition-colors duration-300 ${
-                adLoaded ? "text-[#16C47F]" : "text-slate-500"
-              }`}
-            >
+        <div className="w-full max-w-2xl bg-white border border-gray-200 shadow-sm overflow-hidden">
+          <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-5 py-2 flex items-center justify-between">
+            <p className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Important Notice
+            </p>
+            <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-gray-400">
               <span
-                className={`inline-block w-1.5 h-1.5 rounded-full ${
-                  adLoaded ? "bg-[#16C47F]" : "bg-slate-500 animate-pulse"
+                className={`inline-block w-2 h-2 rounded-full flex-shrink-0 ${
+                  adLoaded ? "bg-green-500" : "bg-orange-400 animate-pulse"
                 }`}
               />
-              {adLoaded ? "Redirecting…" : "Loading ad…"}
-            </span>
+              <span className="whitespace-nowrap">
+                {adLoaded ? "Redirecting…" : `Opening in ${countdown}s`}
+              </span>
+            </div>
           </div>
 
-          {/* 
-            FIX: The ad div must always be in the DOM at its real size so the
-            Adsterra script can write into it and the poll can find children.
-            We show a skeleton on top while waiting, then fade it out — we never
-            use h-0/overflow-hidden which would starve the ad of layout space.
-          */}
-          <div className="relative">
-
-            {/* Skeleton — overlays the ad slot, fades out once ad loads */}
-            <div
-              className={`absolute inset-0 px-6 pt-6 pb-2 transition-opacity duration-500 pointer-events-none z-10 ${
-                adLoaded ? "opacity-0" : "opacity-100"
-              }`}
-            >
-              <div className="w-full h-[260px] rounded-xl bg-white/5 animate-pulse" />
-            </div>
-
-            {/* Ad slot — always mounted & always visible in the DOM */}
+          {/* Ad — always in DOM at full size, fully visible */}
+          <div className="w-full min-h-[250px] sm:min-h-[280px]">
             <AdsterraAd
               scriptSrc={AD_SCRIPT_SRC}
               containerId={AD_CONTAINER_ID}
               enabled={true}
               centered={true}
               fullWidth={true}
-              minHeight={300}
-              padding="py-4"
-              background="bg-white/[0.02]"
+              minHeight={250}
+              padding="py-3 px-2 sm:py-4 sm:px-4"
+              background="bg-white"
             />
           </div>
         </div>
 
-        {/* Countdown + skip */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="relative w-9 h-9 shrink-0">
-              <svg className="absolute inset-0 -rotate-90" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="14" fill="none" stroke="#ffffff0f" strokeWidth="3" />
-                <circle
-                  cx="18" cy="18" r="14"
-                  fill="none"
-                  stroke="#16C47F"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeDasharray={`${(countdown / FALLBACK_SECONDS) * 88} 88`}
-                  style={{ transition: "stroke-dasharray 1s linear" }}
-                />
-              </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-white text-[11px] font-semibold">
-                {countdown}
+        {/* Progress + status bar */}
+        <div className="w-full max-w-2xl bg-white border border-gray-200 shadow-sm px-4 sm:px-6 py-3 sm:py-4 flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-gray-700 min-w-0">
+              <div
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-t-transparent animate-spin flex-shrink-0 ${
+                  adLoaded ? "border-green-500" : "border-[#8B0000]"
+                }`}
+              />
+              <span className="text-xs sm:text-sm font-medium truncate">
+                {adLoaded
+                  ? "Connected — opening fuelpass.gov.lk"
+                  : "Connecting to National Fuel Pass portal…"}
               </span>
             </div>
-            <span className="text-slate-400 text-sm">
-              {adLoaded
-                ? "Ad loaded — redirecting now"
-                : `Auto-redirect in ${countdown}s`}
-            </span>
+            <button
+              onClick={doRedirect}
+              className="text-[11px] sm:text-xs text-[#8B0000] underline underline-offset-2 hover:opacity-70 transition-opacity whitespace-nowrap flex-shrink-0"
+            >
+              Open now →
+            </button>
           </div>
 
-          <button
-            onClick={doRedirect}
-            className="text-[#16C47F] text-sm hover:underline underline-offset-2 opacity-80 hover:opacity-100 transition-opacity"
-          >
-            Skip and go now →
-          </button>
+          <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#8B0000] rounded-full transition-all duration-1000"
+              style={{
+                width: `${((FALLBACK_SECONDS - countdown) / FALLBACK_SECONDS) * 100}%`,
+              }}
+            />
+          </div>
+
+          <p className="text-[10px] sm:text-xs text-gray-400 leading-relaxed">
+            Used by vehicle owners across Sri Lanka for fuel quota registration and QR code access.
+          </p>
         </div>
 
-        <p className="text-[11px] text-slate-700 text-center">
-          Independent redirect page. Official portal maintained by the Government of Sri Lanka.
-        </p>
-      </div>
-    </main>
+        {/* Vehicle categories table */}
+        <div className="w-full max-w-2xl">
+          <h2 className="text-xs sm:text-sm font-bold text-gray-700 mb-2">
+            Applicable Vehicle Categories
+          </h2>
+          <div className="border border-gray-200 bg-white text-xs sm:text-sm overflow-hidden">
+            {[
+              ["BIKE",    "MOTOR CYCLE / LIGHT MOTOR CYCLE"],
+              ["3WHEEL",  "MOTOR TRICYCLE / MOTOR TRICYCLE VAN / INVALID CARRIAGE"],
+              ["CAR",     "MOTOR CAR / DUAL PURPOSE VEHICLE"],
+              ["VAN",     "MOTOR COACH / OMNIBUS / PRIVATE COACH"],
+              ["LORRY",   "GOODS VEHICLE"],
+              ["TRACTOR", "AGRICULTURAL VEHICLE"],
+            ].map(([cat, desc], i, arr) => (
+              <div
+                key={cat}
+                className={`flex ${i < arr.length - 1 ? "border-b border-gray-200" : ""}`}
+              >
+                <div className="w-20 sm:w-28 flex-shrink-0 px-3 sm:px-4 py-2 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50 flex items-center">
+                  {cat}
+                </div>
+                <div className="px-3 sm:px-4 py-2 text-gray-600 flex items-center">
+                  | {desc}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </main>
+
+      {/* ── Footer ── */}
+      <footer className="bg-white border-t border-gray-200 px-4 py-3 text-center text-[10px] sm:text-xs text-gray-400">
+        © {new Date().getFullYear()} Democratic Socialist Republic of Sri Lanka — National Fuel Pass
+      </footer>
+    </div>
   );
 }
